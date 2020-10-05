@@ -1,8 +1,7 @@
 ## Welcome to  Bavlab exploratory visualization tool on Salt Girit Vakıfları Archieve
+You may reach the application via [Link](https://github.com/anilozdemir96/Salt-Discovery/index) and may discover new relationships between historical documents and preview the various content using app.
 
-You may reach the application via [Link](https://github.com/anilozdemir96/Salt-Discovery/index.html) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
 ### Markdown
 
