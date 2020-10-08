@@ -35,34 +35,58 @@
 
 
   <style>
+	  html{
+	  margin:0;
+	  padding:0;
+	  max-height:100vh;
+	  overflow:hidden;
+	}
+
+	body {
+	  background: rgba(1, 1, 1, 0);
+	  height: 100%;
+	}
     .as-toolbar {
       background-color: #1E1D1E;
+	  zoom : 80%
+	  
+    }
+	
+	 .as-toolbar2 {
+      background-color: #1E1D1E;
+	  height: 10%;
     }
 
     .as-box{
       background-color: #F0F0F0;
       font-family:courier;
+	  	 position:relative;
+
     }
 
     .select {
     text-align: center;
     text-align-last: center;
     -moz-text-align-last: center;
-    }
 
+    }
+    
     .as-sidebar {
     background-color:#F0F0F0;
+		 position:relative;
+
 
     }
 
-    ul{white-space:nowrap;}
+    ul{white-space:nowrap;
+		 position:relative;
+}
 
 /*
     .as-toolbar__item{ 
-	  margin: auto;
-	  width: 50%;
 	  border: 3px solid green;
-	  padding: 10px;
+
+	  
 	}*/
 
   </style>
@@ -71,9 +95,8 @@
 <body class="as-app-body as-app">
 
   <!-- 1. HEADER -->
-  <header class="as-toolbar" background="color: #A9A9A9;">
+  <header class="as-toolbar" background="color: #A9A9A9; ">
  			
-
         <div class="as-toolbar__item as-title" style="color: #FFFDFF;">Warqs of Crete</div>
 
       <div class="as-toolbar__item as-title" style="color: #FFFDFF;">
@@ -81,12 +104,10 @@
         <div id="searchbox" align="center">
             <input type="text" name="search" value="" id="search" size="50" placeholder="Search Bar" class="as-input"/> 
 				  			<button id="refreshPage" style= "margin: 5px 10px;" type="submit" onClick="refreshPage()" >Refresh</button>		
-sc
+
         </div>
-      </div>
-
+</div>
   </header>
-
 
   <!-- 2. CONTENT -->
   <div class="as-content">
@@ -94,13 +115,13 @@ sc
     <!-- 2.1 MAP RELATED -->
     <main class="as-main">
         <!-- 2.1.a. MAP -->
-        <div class="as-map-area">
+        <div class="as-map-area" >
             
             <div id="map"></div>
 
-            <div class="as-map-panels">
+            <div class="as-map-panels"  style= "position:relative; zoom:75%">
           
-              <div class="as-panel as-panel--top as-panel--left">
+              <div class="as-panel as-panel--top as-panel--left"  style= "position:relative;" >
 
                   <div class="as-box"> 
                     <div id="controls" align="center">
@@ -118,12 +139,35 @@ sc
                         <option value="">Not Selected</option>
                       </select>
                     </div>
+                  </div>
+				  
+			
+				  
+				  
+				  
+				  
+				  
               </div>
+			  
+			  
+			   <div class="as-panel as-panel--bottom as-panel--left" style= "position:relative; padding-top:50px; padding-bottom:50px; zoom:80%">
+                <div class="box legend" >
+                  <h2 class="h2">Cities</h2>
+                  <ul class="category open-sans" align="center" style="white-space:nowrap">
+                    <li id="Chania"></li>
+                    <li id="Rethymno"></li>
+                    <li id="Unspecified Cities"></li>
+                    <li id="Cities Outside of Crete"></li>
+                    <li id="Iraklion"></li>
+                    <li id="Lasithi"></li>
+                  </ul>
+                </div>
+            </div>	  
+				  
             </div>
-          </div>
 
 
-          <div class="as-panel as-panel--top as-panel--right">
+            <div class="as-panel as-panel--top as-panel--right" style= "zoom : 75%">
             <div id="result-list" class="as-container as-container--border" style="width: 360px;  padding: 5px; background: #000;">
               <section class="as-box">
                 <h1 class="as-title" align="center">Warqs of Crete</h1>
@@ -137,28 +181,21 @@ sc
                         
 
                
-          <div class="as-panel as-panel--bottom as-panel--left">
-            <div class="box legend" >
-              <h2 class="h2">Cities</h2>
-              <ul class="category open-sans" align="center" style="white-space:nowrap">
-                <li id="Chania"></li>
-                <li id="Rethymno"></li>
-                <li id="Unspecified Cities"></li>
-                <li id="Cities Outside of Crete"></li>
-                <li id="Iraklion"></li>
-                <li id="Lasithi"></li>
-              </ul>
-            </div>  
-          </div>
+    
 
         </div>
-          
-  </div>
-          
+
+    </main>
+
+		</div>
+		
+		
+    <div style=" margin : 0; padding: 0;  zoom: 65%; ">
+
     <!-- 2.1.a. MAP FOOTER -->
-    <header class="as-toolbar">
-      <div class="as-toolbar__item as-title" >Filters</div>
-      <div id="totalNumber" >     
+    <header class="as-toolbar"  >
+      <div class="as-toolbar__item as-title" style="height: auto ; width:auto;" >Filters</div>
+      <div id="totalNumber" style="height: auto ; width:auto;" >     
         <p class="as-toolbar__item as-title" id="deneme"></p>
       </div>
     </header>
@@ -231,24 +268,15 @@ sc
       </section>
 
 
-    
+    </div>
 
       
     </div>
 
-
-</main>
-
-
-  </div>
-
-<script> 
- $(document).ready(function(){
-    alert('Welcome, Please make your browser zoom to 80 percent for maximum performance.');
- });
-</script>
-
 <script>
+
+
+
 
 function refreshPage(){
   window.location.reload();
@@ -286,9 +314,11 @@ function refreshPage(){
   //      PART - 1: MAP CONFIGURATION
   // ---------------------------------------
   // ---------------------------------------
-  const map = L.map('map',{ zoomControl:false }).setView([35.300, 25.200], 8);
+  const map = L.map('map',{ zoomControl:false }).setView([35.100, 25.200], 6.5);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
-  maxZoom: 18
+  maxZoom : 18,
+  extent :  [35, 37, 25,27 ]
+
   }).addTo(map);
 
 
@@ -1043,7 +1073,8 @@ function refreshPage(){
   // ---------------------------------------
   //          PART - 8: POP-UP'S
   // ---------------------------------------
-  const popup = L.popup({ closeButton: false , maxWidth: "auto"});
+  const popup = L.popup({ closeButton: false , maxWidth: "auto", zoom: 50,
+});
 
   MainLayer.off('featureOver');
   MainLayer.off('featureOut');
@@ -1056,38 +1087,38 @@ function refreshPage(){
     var id=featureEvent.data._id;
 
     let content = '<div class="widget">';
-    content += `<h3 class="h3"> <a href="${featureEvent.data.url}" target="_blank">${featureEvent.data.title}</a></h3>`;
+    content += `<h3 class="h3" style="zoom : 70%"> <a href="${featureEvent.data.url}" target="_blank">${featureEvent.data.title}</a></h3>`;
      // Add title - add link here as well
      
     content += `<ul>`;
 
     if (featureEvent.data.language) {
-      content += `<li><p><b><u>Language:</u></b>    ${featureEvent.data.language}</p></li>`;
+      content += `<li style="zoom : 70%"><p><b><u>Language:</u></b>    ${featureEvent.data.language}</p></li>`;
     }
 
     if (featureEvent.data.kisi_bilgisi) {
-      content += `<li> <p><b><u> Person Info:</b></u>    ${featureEvent.data.kisi_bilgisi}</p></li>`;
+      content += `<li style="zoom : 70%"> <p><b><u> Person Info:</b></u>    ${featureEvent.data.kisi_bilgisi}</p></li>`;
     }
     if (featureEvent.data.zaman_bilgisi) {
-      content += `<li> <p><b><u> Time Info:</b></u>    ${featureEvent.data.zaman_bilgisi}</p></li>`;
+      content += `<li style="zoom : 70%"> <p><b><u> Time Info:</b></u>    ${featureEvent.data.zaman_bilgisi}</p></li>`;
     }
     if (featureEvent.data.lokasyon_bilgisi) {
-      content += `<li><p><b><u> Location Info:</b></u>    ${featureEvent.data.lokasyon_bilgisi}</p></li>`;
+      content += `<li style="zoom : 70%"><p><b><u> Location Info:</b></u>    ${featureEvent.data.lokasyon_bilgisi}</p></li>`;
     }
     if (featureEvent.data.entities) {
-      content += `<li><p><b><u> Entities:</b></u>    ${featureEvent.data.entities}</h4></li>`;
+      content += `<li style="zoom : 70%"><p><b><u> Entities:</b></u>    ${featureEvent.data.entities}</h4></li>`;
     }
     if (featureEvent.data.anahtar_kelimeler) {
-      content += `<li><p><b><u>Keywords:</b></u>    ${featureEvent.data.anahtar_kelimeler}</p></li>`;
+      content += `<li style="zoom : 70%"><p><b><u>Keywords:</b></u>    ${featureEvent.data.anahtar_kelimeler}</p></li>`;
     }
     if (featureEvent.data.taxonomy_rank) {
-      content += `<li><p><mark style='background-color:${featureEvent.data.colors}'><b><u>Taxomony Rank:</b></u>    ${featureEvent.data.taxonomy_rank}</mark></p></li>`;
+      content += `<li style="zoom : 70%"><p><mark style='background-color:${featureEvent.data.colors}'><b><u>Taxomony Rank:</b></u>    ${featureEvent.data.taxonomy_rank}</mark></p></li>`;
     }
 
     content += `</ul>`;
 
     
-    content+='<button id="RelationButton"  class="as-btn as-btn--primary as-m--4">See Similar Documents</button></div>'; // needs more style
+    content+='<button style="zoom : 60%" id="RelationButton"  class="as-btn as-btn--primary as-m--4">See Similar Documents</button></div>'; // needs more style
 
     popup.setContent(content);
     popup.setLatLng(featureEvent.latLng); // look for it
