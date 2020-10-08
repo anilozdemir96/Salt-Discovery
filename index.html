@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+
+  <title>Warqs of Crete</title>
+
+  <!-- Include Airship.js -->
+  <link rel="stylesheet" href="https://libs.cartocdn.com/airship-style/v2.4.0/airship.css">
+  <script type="module" src="https://libs.cartocdn.com/airship-components/v2.4.0/airship/airship.esm.js"></script>
+  <script nomodule="" src="https://libs.cartocdn.com/airship-components/v2.4.0/airship/airship.js"></script>
+
+  <!-- Include Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+  <link href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" rel="stylesheet">
+
+  <!-- Include CARTO.js -->
+  <script src="https://libs.cartocdn.com/carto.js/v4.2.0/carto.min.js"></script>
+  <link href="https://carto.com/developers/carto-js/examples/maps/public/style.css" rel="stylesheet">
+
+   <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+  <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
+
+  <!-- Include AJAX-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+  <!-- For Autocomplete-->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+  <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.core.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+
+  <style>
+	  html{
+	  margin:0;
+	  padding:0;
+	  max-height:100vh;
+	  overflow:hidden;
+	}
+
+	body {
+	  background: rgba(1, 1, 1, 0);
+	  height: 100%;
+	}
+    .as-toolbar {
+      background-color: #1E1D1E;
+	  zoom : 80%
+	  
+    }
+	
+	 .as-toolbar2 {
+      background-color: #1E1D1E;
+	  height: 10%;
+    }
+
+    .as-box{
+      background-color: #F0F0F0;
+      font-family:courier;
+	  	 position:relative;
+
+    }
+
+    .select {
+    text-align: center;
+    text-align-last: center;
+    -moz-text-align-last: center;
+
+    }
+    
+    .as-sidebar {
+    background-color:#F0F0F0;
+		 position:relative;
+
+
+    }
+
+    ul{white-space:nowrap;
+		 position:relative;
+}
+
+/*
+    .as-toolbar__item{ 
+	  border: 3px solid green;
+
+	  
+	}*/
+
+  </style>
+</head>
+
+<body class="as-app-body as-app">
+
+  <!-- 1. HEADER -->
+  <header class="as-toolbar" background="color: #A9A9A9; ">
+ 			
+        <div class="as-toolbar__item as-title" style="color: #FFFDFF;">Warqs of Crete</div>
+
+      <div class="as-toolbar__item as-title" style="color: #FFFDFF;">
+
+        <div id="searchbox" align="center">
+            <input type="text" name="search" value="" id="search" size="50" placeholder="Search Bar" class="as-input"/> 
+				  			<button id="refreshPage" style= "margin: 5px 10px;" type="submit" onClick="refreshPage()" >Refresh</button>		
+
+        </div>
+</div>
+  </header>
+
+  <!-- 2. CONTENT -->
+  <div class="as-content">
+
+    <!-- 2.1 MAP RELATED -->
+    <main class="as-main">
+        <!-- 2.1.a. MAP -->
+        <div class="as-map-area" >
+            
+            <div id="map"></div>
+
+            <div class="as-map-panels"  style= "position:relative; zoom:75%">
+          
+              <div class="as-panel as-panel--top as-panel--left"  style= "position:relative;" >
+
+                  <div class="as-box"> 
+                    <div id="controls" align="center">
+                      <h4 class="as-title" align="center">Person Info</h4>
+                      <select class="as-dropdown" id="kisi" >
+                        <option value="">Not Selected</option>
+                      </select>
+                    </div>
+                    
+                    <br>
+
+                    <div id="controls" align="center">
+                      <h1 class="as-title" align="center">Keyword</h1>
+                      <select class="as-dropdown" id="anahtar" >
+                        <option value="">Not Selected</option>
+                      </select>
+                    </div>
+                  </div>
+				  
+			
+				  
+				  
+				  
+				  
+				  
+              </div>
+			  
+			  
+			   <div class="as-panel as-panel--bottom as-panel--left" style= "position:relative; padding-top:50px; padding-bottom:50px; zoom:80%">
+                <div class="box legend" >
+                  <h2 class="h2">Cities</h2>
+                  <ul class="category open-sans" align="center" style="white-space:nowrap">
+                    <li id="Chania"></li>
+                    <li id="Rethymno"></li>
+                    <li id="Unspecified Cities"></li>
+                    <li id="Cities Outside of Crete"></li>
+                    <li id="Iraklion"></li>
+                    <li id="Lasithi"></li>
+                  </ul>
+                </div>
+            </div>	  
+				  
+            </div>
+
+
+            <div class="as-panel as-panel--top as-panel--right" style= "zoom : 75%">
+            <div id="result-list" class="as-container as-container--border" style="width: 360px;  padding: 5px; background: #000;">
+              <section class="as-box">
+                <h1 class="as-title" align="center">Warqs of Crete</h1>
+              
+                <p class="as-body">
+                 This archive consists of official records of Muslim inhabitants of Crete who moved to Turkey during the 1920s as a result of the population exchange between Turkey and Greece. Documents spanning the period from 1825 to 1928 in Ottoman Turkish and Greek provide an opportunity to examine the multi-layered social structure on the island, especially from a cultural and economic point of view. This collection also includes a small number of records from other Greek centers such as Rhodes, Lesbos, Thessaloniki, Kavala, and Alexandroupolis.
+                </p>
+              </section>
+            </div>
+          </div>
+                        
+
+               
+    
+
+        </div>
+
+    </main>
+
+		</div>
+		
+		
+    <div style=" margin : 0; padding: 0;  zoom: 65%; ">
+
+    <!-- 2.1.a. MAP FOOTER -->
+    <header class="as-toolbar"  >
+      <div class="as-toolbar__item as-title" style="height: auto ; width:auto;" >Filters</div>
+      <div id="totalNumber" style="height: auto ; width:auto;" >     
+        <p class="as-toolbar__item as-title" id="deneme"></p>
+      </div>
+    </header>
+
+     
+    <div class="as-map-footer">  
+
+
+      <section class="as-box as-box--border">
+        <as-category-widget
+          show-clear
+          id="typeCat"
+          class="as-box"
+          option="button">
+        <p class="as-title" align="center">City</p>
+        </as-category-widget>
+      </section>
+      <section class="as-box as-box--border">
+          <as-category-widget
+            show-clear
+            id="typeCat2"
+            class="as-box"
+            
+          >
+          <p class="as-title" align="center">Topic</p>
+          </as-category-widget>
+      </section>
+      <section class="as-box as-box--border">
+
+          <as-category-widget
+            show-clear
+            id="typeCat3"
+            class="as-box"
+          >
+           <p class="as-title" align="center">Record Belongs To</p>
+          </as-category-widget>
+          
+      </section>
+
+              <section class="as-box as-box--border">
+          <as-category-widget
+            show-clear
+            id="typeCat4"
+            class="as-box"
+          >
+          <p class="as-title" align="center">Language</p>
+          </as-category-widget>
+      </section>
+
+              <section class="as-box as-box--border">
+          <as-category-widget
+            show-clear
+            id="typeCat5"
+            class="as-box"
+          >
+          <p class="as-title" align="center">Type</p>
+          </as-category-widget>
+          
+      </section>
+
+
+      <section class="as-box as-box--border">
+             <as-histogram-widget
+            show-header="false"
+            class="as-box"
+            >
+            <p class="as-title" align="center">Year</p>
+          </as-histogram-widget>
+          
+      </section>
+
+
+    </div>
+
+      
+    </div>
+
+<script>
+
+
+
+
+function refreshPage(){
+  window.location.reload();
+  }
+
+  function Similarity(title, id,score,url) {
+      this.title = title;
+      this.id=id;
+      this.score=score;
+      this.url=url;
+  }; 
+
+  function Search(title, id,url,kisi,zaman,lokasyon,entities,anahtar,taxonomy,renk) {
+    this.title = title;
+    this.id=id;
+    this.url=url;
+    this.kisi=kisi;
+    this.zaman=zaman;
+    this.lokasyon=lokasyon;
+    this.entities=entities;
+    this.anahtar=anahtar;
+    this.taxonomy=taxonomy;
+    this.renk=renk;
+  };  
+
+  function Id(id,title){
+    this.id=id;
+    this.title=title;
+  } 
+
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //      PART - 1: MAP CONFIGURATION
+  // ---------------------------------------
+  // ---------------------------------------
+  const map = L.map('map',{ zoomControl:false }).setView([35.100, 25.200], 6.5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
+  maxZoom : 18,
+  extent :  [35, 37, 25,27 ]
+
+  }).addTo(map);
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //    PART - 2: CARTO AUTHENTICATION
+  // ---------------------------------------
+  // ---------------------------------------
+
+  const client = new carto.Client({
+  apiKey: 'a308fd0d7fb8b700e08bcaffb025100678eae9c6',
+  username: 'dilaramsustecep'
+  });
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //          PART - 3: MAP LAYERS
+  // ---------------------------------------
+  // ---------------------------------------  
+
+  // MAIN layer 
+  const MainSource = new carto.source.SQL('SELECT * FROM main_layer');
+  const MainStyle = new carto.style.CartoCSS(`
+  #layer {
+    marker-width: 6;
+    marker-line-color: #CAC9C9;
+    marker-fill: ramp([city], (#FE4A49, #4A4E4D ,#0392CF ,#FE8A71,#F6CD61,#96BB7C), ("Chania", "Unspecified Cities", "Cities Outside of Crete", "Iraklion","Lasithi","Rethymno"), "=",category);
+  }`);
+  const MainLayer = new carto.layer.Layer(MainSource, MainStyle,{
+  featureOverColumns: ['title', 'url', 'language','_id','kisi_bilgisi','zaman_bilgisi','entities','anahtar_kelimeler','lokasyon_bilgisi','taxonomy_rank','colors']
+  });
+
+
+
+  // CITY NAME layer
+  const CitySource = new carto.source.Dataset('city_name');
+  const CityStyle = new carto.style.CartoCSS(`
+   #layer {
+        marker-width: 10;
+        marker-fill: #ff0800;
+        marker-fill-opacity: 0.9;
+        marker-file: url('https://s3.amazonaws.com/com.cartodb.users-assets.production/maki-icons/cross-18.svg');
+        marker-allow-overlap: true;
+        marker-line-width: 1;
+        marker-line-color: #FFFFFF;
+        marker-line-opacity: 1;
+      }
+      #layer::labels {
+        text-name: [name];
+        text-face-name: 'DejaVu Sans Book';
+        text-size: 15;
+        text-fill: #2e393e;
+        text-label-position-tolerance: 0;
+        text-halo-radius: 0;
+        text-halo-fill: #848383;
+        text-dy: -10;
+        text-allow-overlap: false;
+        text-placement: point;
+        text-placement-type: dummy;
+      }`);
+  const CityLayer= new carto.layer.Layer(CitySource, CityStyle);
+
+
+
+  // SIMILARITY layer
+  const SimilaritySource = new carto.source.SQL('SELECT * FROM similarity_layer');
+  const SimilarityStyle = new carto.style.CartoCSS(`
+    #layer {
+    line-width: 2;
+    line-color: #9A2DFA;
+    line-opacity: 1;
+  }`);
+  const SimilarityLayer= new carto.layer.Layer(SimilaritySource, SimilarityStyle);
+
+
+
+  // TAXONOMY layer
+  const KisiNetworkSource = new carto.source.SQL('SELECT * FROM graph_kisiler');
+  const KisiNetworkStyle = new carto.style.CartoCSS(`
+   #layer {
+      line-width: 1.5;
+      line-color: ramp([score], (#d53e4f, #fc8d59, #fee08b, #ffffbf, #e6f598, #99d594, #3288bd), equal);
+    }
+    #layer::labels {
+      text-name: [score];
+      text-face-name: 'DejaVu Sans Book';
+      text-size: 10;
+      text-fill: #FFFFFF;
+      text-label-position-tolerance: 0;
+      text-halo-radius: 1;
+      text-halo-fill: #6F808D;
+      text-dy: -10;
+      text-allow-overlap: false;
+      text-placement: point;
+      text-placement-type: dummy;
+    }`);
+  const KisiGraphLayer= new carto.layer.Layer(KisiNetworkSource, KisiNetworkStyle);
+
+
+  const AnahtarNetworkSource = new carto.source.SQL('SELECT * FROM graph_anahtarlar');
+  const AnahtarNetworkStyle = new carto.style.CartoCSS(`
+   #layer {
+      line-width: 1.5;
+      line-color: ramp([score], (#d53e4f, #fc8d59, #fee08b, #ffffbf, #e6f598, #99d594, #3288bd), equal);
+    }
+    #layer::labels {
+      text-name: [score];
+      text-face-name: 'DejaVu Sans Book';
+      text-size: 10;
+      text-fill: #FFFFFF;
+      text-label-position-tolerance: 0;
+      text-halo-radius: 1;
+      text-halo-fill: #6F808D;
+      text-dy: -10;
+      text-allow-overlap: false;
+      text-placement: point;
+      text-placement-type: dummy;
+    }`);
+  const AnahtarGraphLayer= new carto.layer.Layer(AnahtarNetworkSource, AnahtarNetworkStyle);
+
+
+
+
+  client.addLayers([MainLayer,CityLayer,SimilarityLayer,KisiGraphLayer,AnahtarGraphLayer]);
+  SimilarityLayer.hide();
+  KisiGraphLayer.hide();
+  AnahtarGraphLayer.hide();
+  client.getLeafletLayer().addTo(map);
+
+
+
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //          PART - 4: DATAVIEWS 
+  // ---------------------------------------
+  // ---------------------------------------
+
+  const NumberOfDocuments = new carto.dataview.Formula(MainSource, 'cartodb_id', {
+        operation: carto.operation.COUNT
+      });
+
+  NumberOfDocuments.on('dataChanged', data => {
+     document.getElementById('deneme').innerHTML=JSON.parse(JSON.stringify(data)).result +' documents on display';;
+  });
+
+  client.addDataview(NumberOfDocuments);
+
+
+  // deneme 
+
+  function filling_data(toBeFilled,newData){
+
+    toBeFilled.forEach((item1) => {
+          
+      var match=false;        
+      newData.forEach((item2) => {
+         
+        if(item1.name==item2.name){
+            item1.value = item2.value; 
+            match=true;        
+        }
+      });
+
+      if (match==false){
+        item1.value=0;
+      }        
+    });
+
+    return toBeFilled;
+  
+  };
+
+
+
+  // CITY dataview
+  var CityWidget = document.getElementById('typeCat');
+  CityWidget.categories = [ // 1. predefined list
+      { name: 'Chania', value: 4176 },
+      { name: 'Lasithi', value: 2011 },
+      { name: 'Iraklion', value: 1219 },
+      { name: 'Rethymno', value: 1054 },
+      { name: 'Unspecified Cities', value: 989 },
+      { name: 'Cities Outside of Crete', value: 689 },
+  ];
+
+ 
+  const CityView = new carto.dataview.Category(MainSource, 'city');
+  var temp_city = CityWidget.categories; // current var
+
+  CityView.on('dataChanged', function(newData) 
+  {
+    var result=JSON.stringify(newData,null,4); 
+    var obj = JSON.parse(result).categories;
+
+    CityWidget.categories=filling_data(temp_city,obj).categories;
+  });
+
+  CityView.on('dataChanged', function(newData) 
+  {
+    CityWidget.categories=temp_city;
+
+  });
+
+  const CityFilter = new carto.filter.Category('city', {});
+  MainSource.addFilter(CityFilter);
+
+
+  CityWidget.addEventListener('categoriesSelected', (event) => {
+    CityFilter.setFilters({ in: event.detail });
+  });
+
+
+
+
+  // TOPIC dataview
+  const TopicWidget = document.getElementById('typeCat2');
+  TopicWidget.categories =[ // 1. predefined list
+        { name: 'Personnel', value: 2268 },
+        { name: 'Orphans', value: 2078 },
+        { name: 'Finance', value: 1847 },
+        { name: 'Properties', value: 1337 },
+        { name: 'Families', value: 653 },
+        { name: 'Others', value: 1964 },
+    ];
+
+  
+  const TopicView = new carto.dataview.Category(MainSource, 'subject');
+  var temp_topic = TopicWidget.categories; 
+
+  TopicView.on('dataChanged', function(newData){
+    
+    var result=JSON.stringify(newData,null,4); 
+    var obj = JSON.parse(result).categories; // current data "usable"
+
+    TopicWidget.categories=filling_data(temp_topic,obj).categories;
+  });
+
+  TopicView.on('dataChanged', function(newData) {
+    TopicWidget.categories=temp_topic;
+  });
+
+  const TopicFilter = new carto.filter.Category('subject', {});
+  MainSource.addFilter(TopicFilter);
+
+  TopicWidget.addEventListener('categoriesSelected', (event) => {
+    TopicFilter.setFilters({ in: event.detail });
+  });
+
+
+
+
+
+
+
+
+
+  // BELONG dataview
+  const BelongsWidget = document.getElementById('typeCat3');
+  BelongsWidget.categories =[ // 1. predefined list
+        { name: 'Pious foundation', value: 9342 },
+        { name: 'Government', value: 781 },
+        { name: 'unknown', value: 24 },
+  ];
+
+  const BelongsView = new carto.dataview.Category(MainSource, 'whose_record');
+  var temp_belong = BelongsWidget.categories; 
+
+
+  BelongsView.on('dataChanged', function(newData) {
+        
+    var result=JSON.stringify(newData,null,4); 
+    var obj = JSON.parse(result).categories; // current data "usable"
+
+    BelongsWidget.categories=filling_data(temp_belong,obj).categories;
+      
+  });
+
+  BelongsView.on('dataChanged', function(newData) {
+      BelongsWidget.categories=temp_belong;
+  });
+
+  const BelongsFilter = new carto.filter.Category('whose_record', {});
+  MainSource.addFilter(BelongsFilter);
+
+  BelongsWidget.addEventListener('categoriesSelected', (event) => {
+  BelongsFilter.setFilters({ in: event.detail });
+  });
+
+
+
+  // LANGUAGE dataview
+  const LanguageWidget = document.getElementById('typeCat4');
+  LanguageWidget.categories =[ // 1. predefined list
+      { name: 'Osmanlı Türkçesi - Ottoman Turkish', value: 10147 },
+  ];
+
+
+  const LanguageView = new carto.dataview.Category(MainSource, 'language');
+  var temp_language = LanguageWidget.categories; 
+
+  LanguageView.on('dataChanged', function(newData) {
+        
+    var result=JSON.stringify(newData,null,4); 
+    var obj = JSON.parse(result).categories; // current data "usable"
+
+    LanguageWidget.categories=filling_data(temp_language,obj).categories;
+        
+  });
+
+  LanguageView.on('dataChanged', function(newData) {
+      
+      LanguageWidget.categories=temp_language;
+  });
+
+  const LanguageFilter = new carto.filter.Category('language', {});
+  MainSource.addFilter(LanguageFilter);
+
+  LanguageWidget.addEventListener('categoriesSelected', (event) => {
+  LanguageFilter.setFilters({ in: event.detail });
+  });
+
+
+
+
+
+
+  // TYPE dataview
+  const TypeWidget = document.getElementById('typeCat5');
+  TypeWidget.categories =[ // 1. predefined list
+        { name: 'Belge - Document', value: 5843 },
+        { name: '', value: 3908  },
+        { name: 'Defter - Register', value: 393 },
+        { name: 'Kitap - Book', value: 3 },
+  ];
+
+
+  const TypeView = new carto.dataview.Category(MainSource, 'type');
+  var temp_type = TypeWidget.categories; 
+
+  TypeView.on('dataChanged', function(newData) {
+        
+    var result=JSON.stringify(newData,null,4); 
+    var obj = JSON.parse(result).categories; // current data "usable"
+
+    TypeWidget.categories=filling_data(temp_type,obj).categories;
+
+  });
+
+    
+  TypeView.on('dataChanged', function(newData) {
+      
+    TypeWidget.categories=temp_type;
+  });
+
+  const TypeFilter = new carto.filter.Category('type', {});
+  MainSource.addFilter(TypeFilter);
+
+  TypeWidget.addEventListener('categoriesSelected', (event) => {
+  TypeFilter.setFilters({ in: event.detail });
+  });
+
+
+
+  // YEAR dataview
+  var YearWidget = document.querySelector('as-histogram-widget');
+  YearWidget.xAxisOptions = {
+      format: (value) => `${value}`,
+      values: [1820,1850,1880,1910,1940,1970],
+  }; 
+  YearWidget.tooltipFormatter = function (data) {
+      return YearWidget.defaultFormatter(data).then((formatted) => {
+        formatted[0] = `${Math.round(data.start)} - ${Math.round(data.end)}`;
+        return formatted;
+      });
+  };
+  
+  YearWidget.data = [
+    { start: 1824, end: 1834, value: 3 },
+    { start: 1834, end: 1844, value: 10 },
+    { start: 1844, end: 1854, value: 17 },
+    { start: 1854, end: 1864, value: 56 },
+    { start: 1864, end: 1874, value: 309 },
+    { start: 1874, end: 1884, value: 638 }, //638
+    { start: 1884, end: 1894, value: 3234 },
+    { start: 1894, end: 1904, value: 2050 },
+    { start: 1904, end: 1914, value: 1695 },
+    { start: 1914, end: 1924, value: 1617 },
+    { start: 1924, end: 1934, value: 54 },
+  ];
+
+
+  var YearView = new carto.dataview.Histogram(MainSource, 'year', {bins: 11, start: 1824, end: 1934});
+	var obj;
+  
+  YearView.on('dataChanged', histogramData => {
+    
+    obj = JSON.parse(JSON.stringify(histogramData)).bins;
+
+    for (var i=0; i<obj.length; i++){
+      delete obj[i].bin ;
+      delete obj[i].avg;
+      delete obj[i].max ;
+      delete obj[i].min ;
+      delete obj[i].normalized ;
+          
+      obj[i]['value'] = obj[i]['freq'];
+      delete obj[i].freq ;
+
+    }
+
+    YearWidget.data=obj;
+  
+  });
+
+	const YearFilter = new carto.filter.Range('year', {});
+	MainSource.addFilter(YearFilter);
+ 
+	YearWidget.addEventListener('selectionChanged', (event) => {
+		YearFilter.setFilters({ between:{ min:event.detail.selection[0], max:event.detail.selection[1]-1}});
+	});
+
+  
+
+  client.addDataviews([CityView,TopicView,BelongsView,LanguageView,TypeView,YearView]);
+
+
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //          PART - 5: DROPDOWN 
+  // ---------------------------------------
+  // ---------------------------------------
+
+  const KisiSource = new carto.source.Dataset('kisiler');
+  const kisiDataview = new carto.dataview.Category(KisiSource, 'kisi', {
+        limit: 28400
+  });
+
+  kisiDataview.on('dataChanged', data => {
+      const kisiler = data.categories.map(category => category.name).sort(); //name needs to stay
+      var kisi_query=`SELECT * FROM  main_layer WHERE _id IN (SELECT _id FROM kisiler WHERE kisi=`;
+      refreshDropdown('kisi',kisiler,kisi_query,'Person Info','graph_kisiler');
+  });
+
+
+  
+
+
+  function filterByNetwork(admin,dataFrame) {
+
+    const taxonomy_query = `SELECT * FROM ${dataFrame} WHERE _from =\'${admin}\'`;
+
+    if (dataFrame=="graph_kisiler"){
+
+    	KisiNetworkSource.setQuery(taxonomy_query);
+    }
+    else{
+    	AnahtarNetworkSource.setQuery(taxonomy_query);
+    }
+    
+
+    const main_query = `SELECT * FROM main_layer WHERE _id IN (SELECT _to FROM ${dataFrame} WHERE _from=\'${admin}\') `;
+    MainSource.setQuery(main_query);
+
+
+
+    var sql = cartodb.SQL({ user: 'dilaramsustecep' });
+
+    sql.execute(main_query).done(function(data){
+
+      var foundsArray=[];
+      var results = data.rows; // take all the rows resulting dataframe 
+
+      if (results.length > 0)
+      {
+      _.each(results, function(result, index, results) { // for each continent apply funtion 
+      foundsArray.push(new Search(result["title"],result["cartodb_id"],result["url"],result["kisi_bilgisi"],result["zaman_bilgisi"],result["lokasyon_bilgisi"],result["entities"],result["anahtar_kelimeler"],result["taxonomy_rank"],result["colors"])); 
+      }); // create new 
+
+                      
+      var resultFound=results.length;
+      $('#result-list').empty();
+      $("#result-list").append('<section class="as-box"><h1 class="as-title" align="center" style="background-color: #F0F0F0;">Network Documents</h1></section>');
+
+                      
+      _.each(foundsArray, function(result, index, results) {
+        $("#result-list").append('<section class="as-box"><h3 class="as-subheader"> <a href="'+result["url"]+'" target="_blank">'+result["title"] +'</a> </h3> '+
+          '<p class="as-body"> <b><u>Person Info:</b></u> '+result["kisi"]+'</p>'+
+          '<p class="as-body"> <b><u>Time Info:</b></u> '+result["zaman"]+'</p>'+
+          '<p class="as-body"> <b><u>Location Info:</b></u> '+result["lokasyon"]+'</p>'+
+          '<p class="as-body"> <b><u>Entities:</b></u> '+result["entities"]+'</p>'+
+          '<p class="as-body"> <b><u>Keywords:</b></u> '+result["anahtar"]+'</p>'+
+          '<span class="as-badge as-bg--badge-blue" style="background-color:'+result["renk"]+'"><p class="as-body"> <b><u>Taxonomy Rank:</b></u> </p> '+result["taxonomy"]+'</span>'+
+
+          '</section>');
+        });
+  }
+  else{
+  	alert("CAUTION !!! \nIf the number of documents in the network is over 100, it is not shown due to performance problems.");
+  }
+     
+
+    });
+
+    if (dataFrame=="graph_kisiler"){
+
+    	KisiGraphLayer.show();
+    }
+    else{
+    	AnahtarGraphLayer.show();
+    }//TaxonomyLayer.show(); // needs to change 
+
+    }
+
+
+
+  function refreshDropdown(elementID,adminNames,query,resultFrom,dataFrame) {
+
+
+        
+    const countriesDom = document.getElementById(elementID);
+    countriesDom.onchange = event => {
+        const admin = event.target.value;
+
+        var result = query.concat(`\'${admin}\') `);
+        filterBy(admin,result,resultFrom,dataFrame);
+        
+        // MAYBE WE NEED CHANGE 
+        KisiGraphLayer.hide();
+  		AnahtarGraphLayer.hide();
+    };
+
+    adminNames.forEach(admin => {
+        const option = document.createElement('option');
+        option.innerHTML = admin;
+        option.value = admin;
+        countriesDom.appendChild(option);
+    });
+  }
+
+
+
+  function filterBy(admin,query,resultFrom,dataFrame) {
+
+    var resultsArray=[];
+    
+
+      
+    MainSource.setQuery(query);
+    var sql = cartodb.SQL({ user: 'dilaramsustecep' });
+
+    sql.execute(query).done(function(data){
+      var foundsArray=[];
+      var results = data.rows; // take all the rows resulting dataframe 
+
+
+      _.each(results, function(result, index, results) { // for each continent apply funtion 
+      foundsArray.push(new Search(result["title"],result["_id"],result["url"],result["kisi_bilgisi"],result["zaman_bilgisi"],result["lokasyon_bilgisi"],result["entities"],result["anahtar_kelimeler"],result["taxonomy_rank"],result["colors"])); 
+      }); // create new 
+
+                      
+      var resultFound=results.length;
+      $('#result-list').empty();
+      $("#result-list").append('<section class="as-box"><h1 class="as-title" align="center" style="background-color: #F0F0F0;">'+resultFrom+'<br><u><i>'+admin+'<u></i></h1></section>');
+
+                      
+      _.each(foundsArray, function(result, index, results) {
+      	console.log(result["id"]);
+        $("#result-list").append('<section class="as-box"><h3 class="as-subheader"> <a href="'+result["url"]+'" target="_blank">'+result["title"] +'</a> </h3> '+
+          '<p class="as-body"> <b><u>Person Info:</b></u> '+result["kisi"]+'</p>'+
+          '<p class="as-body"> <b><u>Time Info:</b></u> '+result["zaman"]+'</p>'+
+          '<p class="as-body"> <b><u>Location Info:</b></u> '+result["lokasyon"]+'</p>'+
+          '<p class="as-body"> <b><u>Entities:</b></u> '+result["entities"]+'</p>'+
+          '<p class="as-body"> <b><u>Keywords:</b></u> '+result["anahtar"]+'</p>'+
+          '<span class="as-badge as-bg--badge-blue" style="background-color:'+result["renk"]+'"><p class="as-body"> <b><u>Taxonomy Rank:</b></u> </p> '+result["taxonomy"]+'</span>'+
+          '<button class="as-btn as-btn--primary as-m--4" onclick="filterByNetwork(\''+result["id"]+'\',\''+dataFrame+'\')">Network</button>'+
+          '</section>');
+        });         
+
+    });
+
+        
+  }
+
+     //<button class="as-btn as-btn--primary as-m--4" onclick="filterByNetwork(\''+result["id"]+'\')">Network</button>
+
+  const AnahtarSource = new carto.source.Dataset('anahtar_kelimeler');
+  const anahtarDataview = new carto.dataview.Category(AnahtarSource, 'anahtar_kelime', {
+      limit: 28400
+  });
+
+  anahtarDataview.on('dataChanged', data => {
+  	  
+      const anahtarlar = data.categories.map(category => category.name).sort(); //name needs to stay
+
+      var anahtar_query=`SELECT * FROM  main_layer WHERE _id IN (SELECT _id FROM anahtar_kelimeler WHERE anahtar_kelime=`;
+      refreshDropdown('anahtar',anahtarlar,anahtar_query,'Anahtar Kelimeler','graph_anahtarlar');
+  });
+
+    
+  client.addDataviews([kisiDataview,anahtarDataview]);
+
+
+
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //          PART - 6: LEGEND 
+  // ---------------------------------------
+  // ---------------------------------------
+ 
+  MainLayer.on('metadataChanged', function(event) {
+    event.styles.forEach(function (styleMetadata) {
+    switch(styleMetadata.getProperty()) {
+    case 'marker-fill':
+      renderLegendCapital(styleMetadata);
+      break;
+      }
+    });
+  });
+
+
+  function renderLegendCapital(metadata) {
+      const categories = metadata.getCategories();
+
+      for (category of categories) {
+        let name=category.name;
+        document.getElementById(name).innerHTML = `
+          <div class="circle" style="background:${category.value}"></div>${name}
+        `;
+
+  }}
+
+
+
+  // ---------------------------------------
+  // ---------------------------------------
+  //         PART - 7: SEARCH BAR  
+  // ---------------------------------------
+  // ---------------------------------------
+        
+  var sql = cartodb.SQL({ user: 'dilaramsustecep' });
+            
+  $('#search').autocomplete({ source: function( request, response ) {
+
+    var term="";
+    var char="";
+    for (var i = 0; i < request.term.length; i++) {
+        char=request.term.charAt(i);
+      if (char!="'"){
+        term+=char;
+      }
+      else{
+        term+=char+"'";
+      }
+      
+    }
+                    
+
+    sql.execute("select * from main_layer where title ilike '" + "%"+  term + "%" + "' ORDER BY taxonomy_rank DESC").done(function(data){ 
+                        // buraya title'lar ve title'lar href şeklinde olucak 
+      var foundsArray=[];
+      MainSource.setQuery("select * from main_layer where title ilike '" + "%"+  request.term + "%" + "' ORDER BY taxonomy_rank DESC");
+
+                
+      var results = data.rows; // take all the rows resulting dataframe 
+      _.each(results, function(result, index, results) { // for each continent apply funtion 
+      foundsArray.push(new Search(result["title"],result["cartodb_id"],result["url"],result["kisi_bilgisi"],result["zaman_bilgisi"],result["lokasyon_bilgisi"],result["entities"],result["anahtar_kelimeler"],result["taxonomy_rank"],result["colors"])); 
+      }); // create new 
+
+      var resultFound=results.length;
+
+      $('#result-list').empty();
+      $("#result-list").append('<section class="as-box"><h1 class="as-title" align="center" style="background-color: #F0F0F0;">Search Results</h1></section>');
+      $("#result-list").append('<section class="as-box"><h3 class="as-subheader" align="center">'+ resultFound+' documents has found</h3> </section>');
+
+      _.each(foundsArray, function(result, index, results) {
+          $("#result-list").append('<section class="as-box"><h3 class="as-subheader"> <a href="'+result["url"]+'" target="_blank">'+result["title"] +'</a> </h3> '+
+            '<p class="as-body"> <b><u>Person Info:</b></u> '+result["kisi"]+'</p>'+
+            '<p class="as-body"> <b><u>Time Info:</b></u> '+result["zaman"]+'</p>'+
+            '<p class="as-body"> <b><u>Location Infp:</b></u> '+result["lokasyon"]+'</p>'+
+            '<p class="as-body"> <b><u>Entities:</b></u> '+result["entities"]+'</p>'+
+            '<p class="as-body"> <b><u>Keywords:</b></u> '+result["anahtar"]+'</p>'+
+            '<span class="as-badge as-bg--badge-blue" style="background-color:'+result["renk"]+'"><p class="as-body"> <b><u>Taxonomy Rank:</b></u> </p> '+result["taxonomy"]+'</span>'+
+            '</section>');
+        });
+                      
+
+      })
+    },
+                
+    minLength: 0,
+  });
+
+
+  function filterByID(admin) {
+
+  		// PROBABLY NO PROBLEM
+  		KisiGraphLayer.hide();
+  		AnahtarGraphLayer.hide();
+
+        const main_query = `SELECT * FROM  main_layer WHERE _id IN (SELECT _to FROM similarity_layer WHERE _id=\'${admin}\') `;
+        MainSource.setQuery(main_query);
+
+        const similarity_query = `SELECT * FROM similarity_layer WHERE _id=\'${admin}\'`;
+        SimilaritySource.setQuery(similarity_query);
+        
+        SimilarityLayer.show();
+
+
+        //For displaying on left-side box
+        var resultsArray=[];
+        var query= `SELECT * FROM similarity_layer WHERE _id=\'${admin}\' ORDER BY similarity DESC`;
+        var sql = cartodb.SQL({ user: 'dilaramsustecep' });
+
+        sql.execute(query).done(function(data)
+        {
+
+        
+          var results = data.rows; // take all the rows resulting dataframe 
+
+          _.each(results, function(result, index, results) 
+          { // for each continent apply funtion 
+          resultsArray.push(new Similarity(result["title"],result["cartodb_id"],result["similarity"],result["url"])); 
+          }); // create new 
+
+          $('#result-list').empty();
+          $("#result-list").append('<section class="as-box"><h1 class="as-title" align="center" style="background-color: #F0F0F0;">Similar Documents</h1></section>');
+
+          _.each(resultsArray, function(result, index, results) 
+          {
+            $("#result-list").append('<section class="as-box">'+
+                      '<h3 class="as-title">Similarity Score: '+result["score"]+'</h3>'+
+                      '<h4 class="as-subheader">' + '<a href="'+result["url"]+'" target="_blank">'+result["title"] +'</a></h4>'+
+            
+                      
+              '</section>');
+            });
+          /* --- */
+
+        });
+
+
+
+  }
+
+  // ---------------------------------------
+  //          PART - 8: POP-UP'S
+  // ---------------------------------------
+  const popup = L.popup({ closeButton: false , maxWidth: "auto", zoom: 50,
+});
+
+  MainLayer.off('featureOver');
+  MainLayer.off('featureOut');
+  MainLayer.on('featureClicked', openPopup);
+
+
+  function openPopup(featureEvent) {
+
+      
+    var id=featureEvent.data._id;
+
+    let content = '<div class="widget">';
+    content += `<h3 class="h3" style="zoom : 70%"> <a href="${featureEvent.data.url}" target="_blank">${featureEvent.data.title}</a></h3>`;
+     // Add title - add link here as well
+     
+    content += `<ul>`;
+
+    if (featureEvent.data.language) {
+      content += `<li style="zoom : 70%"><p><b><u>Language:</u></b>    ${featureEvent.data.language}</p></li>`;
+    }
+
+    if (featureEvent.data.kisi_bilgisi) {
+      content += `<li style="zoom : 70%"> <p><b><u> Person Info:</b></u>    ${featureEvent.data.kisi_bilgisi}</p></li>`;
+    }
+    if (featureEvent.data.zaman_bilgisi) {
+      content += `<li style="zoom : 70%"> <p><b><u> Time Info:</b></u>    ${featureEvent.data.zaman_bilgisi}</p></li>`;
+    }
+    if (featureEvent.data.lokasyon_bilgisi) {
+      content += `<li style="zoom : 70%"><p><b><u> Location Info:</b></u>    ${featureEvent.data.lokasyon_bilgisi}</p></li>`;
+    }
+    if (featureEvent.data.entities) {
+      content += `<li style="zoom : 70%"><p><b><u> Entities:</b></u>    ${featureEvent.data.entities}</h4></li>`;
+    }
+    if (featureEvent.data.anahtar_kelimeler) {
+      content += `<li style="zoom : 70%"><p><b><u>Keywords:</b></u>    ${featureEvent.data.anahtar_kelimeler}</p></li>`;
+    }
+    if (featureEvent.data.taxonomy_rank) {
+      content += `<li style="zoom : 70%"><p><mark style='background-color:${featureEvent.data.colors}'><b><u>Taxomony Rank:</b></u>    ${featureEvent.data.taxonomy_rank}</mark></p></li>`;
+    }
+
+    content += `</ul>`;
+
+    
+    content+='<button style="zoom : 60%" id="RelationButton"  class="as-btn as-btn--primary as-m--4">See Similar Documents</button></div>'; // needs more style
+
+    popup.setContent(content);
+    popup.setLatLng(featureEvent.latLng); // look for it
+    if (!popup.isOpen()) {
+      popup.openOn(map);
+      document.getElementById('RelationButton').addEventListener("click",function(){ filterByID(id);});
+    }
+
+  }
+
+  function closePopup(featureEvent) {
+      popup.removeFrom(map);
+  }
+
+
+  </script>
+</body>
+
+</html>
+
+      
